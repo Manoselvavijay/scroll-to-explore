@@ -172,8 +172,9 @@ export function Hero() {
                     transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
                     className="space-y-2 text-lg md:text-xl text-white/80 font-light"
                 >
-                    <p className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Your new favorite way to connect with your digital world.</p>
-                    <p className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Playfully precise. Seriously comfortable.</p>
+                    <p className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        Your new favorite way to connect with your digital world. Playfully precise. Seriously comfortable.
+                    </p>
                 </motion.div>
             </motion.div>
 

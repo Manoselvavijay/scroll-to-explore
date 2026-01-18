@@ -32,36 +32,16 @@ export function ScrollSequence() {
     // Preload images
     useEffect(() => {
         const loadImages = async () => {
-            // 1. Load the first image immediately
-            const firstImg = new Image();
-            firstImg.src = `/sequences/ezgif-frame-001.jpg`;
+            const loadedImages: HTMLImageElement[] = [];
+            const promises = [];
 
-            await new Promise((resolve) => {
-                firstImg.onload = () => {
-                    setImages(prev => {
-                        const newImages = [...prev];
-                        newImages[0] = firstImg;
-                        return newImages;
-                    });
-                    setIsLoaded(true); // Show immediately after first frame
-                    resolve(null);
-                };
-            });
-
-            // 2. Load the rest in the background
-            const remainingPromises = [];
-            for (let i = 2; i <= FRAME_COUNT; i++) {
+            for (let i = 1; i <= FRAME_COUNT; i++) {
                 const promise = new Promise((resolve) => {
                     const img = new Image();
                     const numStr = i.toString().padStart(3, '0');
                     img.src = `/sequences/ezgif-frame-${numStr}.jpg`;
                     img.onload = () => {
-                        setImages(prev => {
-                            // Functional update to ensure we don't lose previous frames
-                            const newImages = [...prev];
-                            newImages[i - 1] = img;
-                            return newImages;
-                        });
+                        loadedImages[i - 1] = img;
                         resolve(img);
                     };
                     img.onerror = () => {
@@ -69,9 +49,12 @@ export function ScrollSequence() {
                         resolve(null);
                     };
                 });
-                remainingPromises.push(promise);
+                promises.push(promise);
             }
-            // We don't await the rest to block UI
+
+            await Promise.all(promises);
+            setImages(loadedImages);
+            setIsLoaded(true);
         };
 
         loadImages();
