@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Mouse - Play to Create',
+  title: 'Between Moves',
   description: 'Built for play. Designed to create.',
 };
 
