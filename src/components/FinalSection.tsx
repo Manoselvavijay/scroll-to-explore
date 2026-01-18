@@ -30,13 +30,13 @@ function FeatureCard({ title, subtitle, index }: { title: string, subtitle: stri
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="relative w-full aspect-square perspective-1000"
+            className="relative w-full perspective-1000"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
             <motion.div
                 style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-                className="w-full h-full bg-[#0E0E11]/80 backdrop-blur-md border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col justify-center items-center text-center overflow-hidden group hover:border-white/20 transition-colors cursor-default shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                className="w-full h-full bg-[#0E0E11]/80 backdrop-blur-md border border-white/10 rounded-2xl p-5 md:p-10 flex flex-col justify-center items-center text-center overflow-hidden group hover:border-white/20 transition-colors cursor-default shadow-[0_0_20px_rgba(0,0,0,0.5)]"
             >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-cyan-500 to-blue-600 blur-xl" />
 
