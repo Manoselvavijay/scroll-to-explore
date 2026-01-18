@@ -161,7 +161,7 @@ export function Hero() {
                     initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     transition={{ duration: 1, ease: "easeOut" }}
-                    className="text-6xl md:text-9xl font-bold text-white drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+                    className="text-5xl md:text-9xl font-bold text-white drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
                 >
                     Pure Magic
                 </motion.h1>
