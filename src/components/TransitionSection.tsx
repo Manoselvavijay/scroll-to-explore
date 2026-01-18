@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export function TransitionSection() {
     return (
-        <section id="inside" className="min-h-[80vh] -mt-[30vh] flex flex-col items-center justify-center bg-[#0E0E11] px-4 py-24 text-center z-10 relative overflow-hidden">
+        <section id="inside" className="min-h-[120vh] -mt-[30vh] flex flex-col items-center justify-center bg-[#0E0E11] px-4 py-24 text-center z-10 relative overflow-hidden">
 
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />

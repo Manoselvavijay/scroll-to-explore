@@ -26,8 +26,8 @@ export function ScrollSequence() {
     const text3Opacity = useTransform(scrollYProgress, [0.7, 0.8, 0.9], [0, 1, 0]);
 
     // Canvas exit transition
-    const canvasOpacity = useTransform(scrollYProgress, [0.85, 1], [1, 0]);
-    const canvasBlur = useTransform(scrollYProgress, [0.85, 1], ["blur(0px)", "blur(10px)"]);
+    const canvasOpacity = useTransform(scrollYProgress, [0.95, 1], [1, 0]);
+    const canvasBlur = useTransform(scrollYProgress, [0.95, 1], ["blur(0px)", "blur(10px)"]);
 
     // Preload images
     useEffect(() => {

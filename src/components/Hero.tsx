@@ -1,9 +1,15 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 export function Hero() {
     const { scrollY } = useScroll();
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLElement>(null);
+    const isInView = useInView(containerRef);
+    const [images, setImages] = useState<HTMLImageElement[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Transform values based on scroll position
     const opacity = useTransform(scrollY, [0, 800], [1, 0]);
@@ -11,35 +17,139 @@ export function Hero() {
     const scale = useTransform(scrollY, [0, 800], [1, 1.1]);
     const y = useTransform(scrollY, [0, 800], [0, 100]); // Parallax effect
 
-    return (
-        <section id="intro" className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#0E0E11]">
+    // Load images
+    useEffect(() => {
+        let isMounted = true;
+        const loadImages = async () => {
+            const loadedImages: HTMLImageElement[] = [];
 
-            {/* Background Image Container */}
+            for (let i = 1; i <= 120; i++) {
+                const img = new Image();
+                const paddedIndex = i.toString().padStart(3, '0');
+                img.src = `/hero-sequence/ezgif-frame-${paddedIndex}.jpg`;
+
+                // We don't necessarily need to await each onload for performance, 
+                // but for a smooth start it helps. 
+                // Let's just push (browser caches) and trust the canvas draw.
+                // Actually, preloading is better.
+                await new Promise((resolve) => {
+                    img.onload = resolve;
+                    img.onerror = resolve; // Continue even if one fails
+                });
+
+                if (!isMounted) return;
+                loadedImages.push(img);
+            }
+
+            if (isMounted) {
+                setImages(loadedImages);
+                setIsLoaded(true);
+            }
+        };
+
+        loadImages();
+        return () => { isMounted = false; };
+    }, []);
+
+    // Animation Loop
+    useEffect(() => {
+        if (!canvasRef.current || images.length === 0 || !isLoaded) return;
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let animationFrameId: number;
+        let currentFrame = 0;
+        let lastFrameTime = 0;
+        const fps = 24; // Smooth speed (5s loop)
+        const frameInterval = 1000 / fps;
+
+        const render = (time: number) => {
+            if (!isInView) {
+                animationFrameId = requestAnimationFrame(render);
+                return;
+            }
+
+            const deltaTime = time - lastFrameTime;
+
+            if (deltaTime >= frameInterval) {
+                const img = images[currentFrame];
+
+                // Draw image 'cover' style
+                const w = canvas.width;
+                const h = canvas.height;
+                // Avoid div by zero
+                if (img.height === 0) return;
+
+                const imgRatio = img.width / img.height;
+                const canvasRatio = w / h;
+
+                let drawW, drawH, offsetX, offsetY;
+
+                if (canvasRatio > imgRatio) {
+                    drawW = w;
+                    drawH = w / imgRatio;
+                    offsetX = 0;
+                    offsetY = (h - drawH) / 2;
+                } else {
+                    drawH = h;
+                    drawW = h * imgRatio;
+                    offsetX = (w - drawW) / 2;
+                    offsetY = 0;
+                }
+
+                ctx.clearRect(0, 0, w, h);
+                ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+
+                currentFrame = (currentFrame + 1) % images.length;
+                lastFrameTime = time;
+            }
+
+            animationFrameId = requestAnimationFrame(render);
+        };
+
+        // Handle resize
+        const handleResize = () => {
+            if (!containerRef.current || !canvasRef.current) return;
+            canvasRef.current.width = containerRef.current.clientWidth;
+            canvasRef.current.height = containerRef.current.clientHeight;
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initial size
+
+        animationFrameId = requestAnimationFrame(render);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, [images, isLoaded, isInView]);
+
+    return (
+        <section ref={containerRef} id="intro" className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#0E0E11]">
+
+            {/* Background Canvas Sequence */}
             <motion.div
                 style={{ opacity, filter: blur, scale }}
                 className="absolute inset-0 w-full h-full z-0"
             >
-                <img
-                    src="/hero-background.png"
-                    alt="Hero Background"
-                    className="w-full h-full object-cover opacity-80"
+                <canvas
+                    ref={canvasRef}
+                    className="w-full h-full object-cover"
                 />
+
+                {/* Fallback/Loading State */}
+                {!isLoaded && (
+                    <div className="absolute inset-0 bg-[#0E0E11] flex items-center justify-center">
+                        {/* Optional: Add a spinner or just keep dark */}
+                        <div className="w-full h-full bg-[#0E0E11]" />
+                    </div>
+                )}
+
                 {/* Dark Gradient Overlay for Text Readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E11] via-black/40 to-[#0E0E11]/80" />
-            </motion.div>
-
-            {/* Abstract Background Elements (Subtle Overlay) */}
-            <motion.div
-                style={{ opacity, y }}
-                className="absolute inset-0 w-full h-full pointer-events-none z-0 mix-blend-screen"
-            >
-                {/* Neon Circle */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 0.5, scale: 1 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-cyan-500/20 shadow-[0_0_100px_rgba(0,243,255,0.1)]"
-                />
             </motion.div>
 
             {/* Hero Content */}

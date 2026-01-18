@@ -38,7 +38,7 @@ function FeatureCard({ title, subtitle, index }: { title: string, subtitle: stri
                 style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
                 className="w-full h-full bg-[#0E0E11]/80 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex flex-col justify-center items-center text-center overflow-hidden group hover:border-white/20 transition-colors cursor-default shadow-[0_0_20px_rgba(0,0,0,0.5)]"
             >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity bg-gradient-to-br from-purple-500 to-blue-500 blur-xl" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-cyan-500 to-blue-600 blur-xl" />
 
                 <div className="relative z-10 transform translate-z-20 flex flex-col items-center">
                     <div className="w-12 h-12 rounded-full border border-cyan-500/30 bg-cyan-500/10 mb-6 flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.2)]">
